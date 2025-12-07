@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservasi Tiket Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* CSS sama seperti asli */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        section {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #001f3f, #003f7f, #005bb5);
+            padding: 40px;
+            color: white;
+        }
+        .card-custom {
+            width: 500px;
+            background: rgba(255,255,255,0.12);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            margin: auto;
+        }
+        h1, h2 {
+            font-weight: 700;
+            text-shadow: 0 0 8px rgba(0,150,255,0.5);
+            color: #a9d6ff;
+        }
+        .table {
+            color: white;
+        }
+        .table th {
+            background: rgba(255,255,255,0.2);
+        }
+        .btn-primary, .custom-btn, .btn-back, .btn-success {
+            background: linear-gradient(45deg, #0077cc, #00aaff);
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            color: white;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+        .btn-primary:hover, .btn-back:hover, .custom-btn:hover, .btn-success:hover {
+            background: linear-gradient(45deg, #0062aa, #0088dd);
+            transform: translateY(-2px);
+        }
+        .form-control {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid #8ccaff;
+            color: white;
+        }
+        .form-control::placeholder {
+            color: #d0eaff;
+        }
+        .form-control:focus {
+            border-color: #a9d6ff;
+            box-shadow: 0 0 5px #73c2ff;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Halaman Home -->
+<section id="homepage">
+    <div class="card-custom text-center">
+        <h1 class="mb-4">Selamat Datang di Reservasi Tiket Online</h1>
+        <p class="mb-3">Pesan tiket kereta lebih mudah dan cepat</p>
+        <button class="custom-btn w-100" onclick="showLogin()">Login</button>
+    </div>
+</section>
+
+<!-- Halaman Login -->
+<section id="login" class="d-none">
+    <div class="card-custom text-center">
+        <h1>Welcome Back</h1>
+        <form id="loginForm">
+            <div class="mb-3 text-start">
+                <label for="username">Username</label>
+                <input type="text" id="username" class="form-control" placeholder="username" required>
+            </div>
+            <div class="mb-3 text-start">
+                <label for="password">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="********" required>
+            </div>
+            <button type="submit" class="btn-primary w-100 mt-2">Login</button>
+            <button type="button" class="btn-back w-100 mt-3" onclick="backToHomepage()">Kembali</button>
+        </form>
+    </div>
+</section>
+
+<!-- Halaman Jadwal -->
+<section id="jadwal" class="d-none">
+    <div class="card-custom">
+        <h2 class="text-center mb-4">Jadwal Tiket Tersedia</h2>
+        <table class="table table-bordered text-white">
+            <thead>
+                <tr>
+                    <th>Rute</th>
+                    <th>Tanggal</th>
+                    <th>Waktu</th>
+                    <th>Harga</th>
+                    <th>Kursi</th>
+                    <th>Pilih</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Jakarta - Surabaya</td>
+                    <td>15-12-2025</td>
+                    <td>08:00</td>
+                    <td>Rp 150.000</td>
+                    <td>10</td>
+                    <td><button class="btn-primary btn-sm" onclick="pilihJadwal('Jakarta - Surabaya','15-12-2025','08:00',150000)">Pilih</button></td>
+                </tr>
+                <tr>
+                    <td>Bandung - Yogyakarta</td>
+                    <td>15-12-2025</td>
+                    <td>14:00</td>
+                    <td>Rp 200.000</td>
+                    <td>5</td>
+                    <td><button class="btn-primary btn-sm" onclick="pilihJadwal('Bandung - Yogyakarta','15-12-2025','14:00',200000)">Pilih</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="btn-back w-100" onclick="logout()">Logout</button>
+    </div>
+</section>
+
+<!-- Halaman Reservasi Pribadi -->
+<section id="reservasi-pribadi" class="d-none">
+    <div class="card-custom">
+        <h2 class="text-center mb-3">Reservasi Pribadi</h2>
+        <p>Jadwal Dipilih: <span id="jadwalDipilih"></span></p>
+        <form id="reservasiPribadiForm">
+            <div class="mb-3">
+                <label for="nama">Nama Lengkap</label>
+                <input type="text" id="nama" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="email">Email</label>
+                <input type="email" id="email" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="telepon">No Telepon</label>
+                <input type="tel" id="telepon" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="jumlahTiket">Jumlah Tiket</label>
+                <input type="number" id="jumlahTiket" class="form-control" min="1" required>
+            </div>
+            <button type="submit" class="btn-primary w-100 mt-2">Lanjut Pembayaran</button>
+            <button type="button" class="btn-back w-100 mt-3" onclick="backToJadwal()">Kembali</button>
+        </form>
+    </div>
+</section>
+
+<!-- Halaman Pembayaran -->
+<section id="pembayaran" class="d-none">
+    <div class="card-custom">
+        <h2 class="text-center">Pembayaran</h2>
+        <p>Total: <span id="totalHarga"></span></p>
+        <form id="pembayaranForm">
+            <div class="mb-3">
+                <label for="cardNumber">Nomor Kartu Kredit</label>
+                <input type="text" id="cardNumber" class="form-control" pattern="\d{16}" placeholder="1234567890123456" required>
+            </div>
+            <div class="mb-3">
+                <label for="cvv">CVV</label>
+                <input type="text" id="cvv" class="form-control" pattern="\d{3}" placeholder="123" required>
+            </div>
+            <button type="submit" class="btn-success w-100 mt-2">Bayar Sekarang</button>
+            <button type="button" class="btn-back w-100 mt-3" onclick="backToReservasiPribadi()">Kembali</button>
+        </form>
+    </div>
+</section>
+
+<script>
+let jadwalTerpilih = {};
+let isLoggedIn = false;
+
+function showLogin() {
+    document.getElementById("homepage").classList.add("d-none");
+    document.getElementById("login").classList.remove("d-none");
+}
+
+function backToHomepage() {
+    document.getElementById("login").classList.add("d-none");
+    document.getElementById("homepage").classList.remove("d-none");
+}
+
+document.getElementById("loginForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    let user = document.getElementById("username").value;
+    let pass = document.getElementById("password").value;
+    if (user === "user" && pass === "pass") {
+        isLoggedIn = true;
+        localStorage.setItem('isLoggedIn', true); // Simpan state
+        document.getElementById("login").classList.add("d-none");
+        document.getElementById("jadwal").classList.remove("d-none");
+    } else {
+        alert("Username atau password salah!");
+    }
+});
+
+// Cek login saat load
+if (localStorage.getItem('isLoggedIn') === 'true') {
+    document.getElementById("homepage").classList.add("d-none");
+    document.getElementById("jadwal").classList.remove("d-none");
+}
+
+function pilihJadwal(r, tgl, wkt, hrg) {
+    jadwalTerpilih = { r, tgl, wkt, hrg };
+    document.getElementById("jadwal").classList.add("d-none");
+    document.getElementById("reservasi-pribadi").classList.remove("d-none");
+    document.getElementById("jadwalDipilih").innerText = `${r} - ${tgl} ${wkt}`;
+}
+
+function backToJadwal() {
+    document.getElementById("reservasi-pribadi").classList.add("d-none");
+    document.getElementById("jadwal").classList.remove("d-none");
+}
+
+document.getElementById("reservasiPribadiForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    let jumlah = Number(document.getElementById("jumlahTiket").value);
+    let total = jadwalTerpilih.hrg * jumlah;
+    document.getElementById("totalHarga").innerText = `Rp ${total.toLocaleString()}`;
+    document.getElementById("reservasi-pribadi").classList.add("d-none");
+    document.getElementById("pembayaran").classList.remove("d-none");
+});
+
+document.getElementById("pembayaranForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    alert('Pembayaran berhasil! Tiket telah dipesan');
+    // Reset ke homepage
+    localStorage.removeItem('isLoggedIn');
+    location.reload();
+});
+
+function backToReservasiPribadi() {
+    document.getElementById("pembayaran").classList.add("d-none");
+    document.getElementById("reservasi-pribadi").classList.remove("d-none");
+}
+
+function logout() {
+    localStorage.removeItem('isLoggedIn');
+    document.getElementById("jadwal").classList.add("d-none");
+    document.getElementById("homepage").classList.remove("d-none");
+}
+</script>
+
+</body>
+</html>
